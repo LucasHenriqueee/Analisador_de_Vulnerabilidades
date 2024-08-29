@@ -1,20 +1,3 @@
-"""
-Este script tem como objetivo tentar implementar um algoritimo que possa gerar uma topologia
-de rede de computadores dentro do GNS3 de acordo com a preferência do usuário.
-
-Lucas Henrique Ventura Oliveira
-
-1. Distribuição dos PCs entre os switches:
-    Determine quantos PCs serão conectados a cada switch. Se o número de PCs não for um múltiplo exato do número de switches, os PCs restantes podem ser distribuídos uniformemente entre os switches.
-
-2. Conexão dos switches:
-    Se houver mais de um switch, os switches devem ser conectados entre si. Isso pode ser feito em um esquema linear ou em outro padrão de topologia (como anel ou estrela), dependendo da necessidade.
-
-3. Adicionando os PCs e os switches à topologia:
-    Para cada switch, adicione o número correspondente de PCs.
-    Conecte os PCs ao switch correspondente.
-    Conecte os switches entre si.
-"""
 import json
 import uuid
 import os
@@ -32,7 +15,7 @@ num_pcs = int(input("Quantos PCs você deseja adicionar? "))
 num_switches = int(input("Quantos switches você deseja adicionar? "))
 
 if num_pcs < 1:
-    print("Número inválido de PCs. Deve ser pelo meno 1.")
+    print("Número inválido de PCs. Deve ser pelo menos 1.")
     exit(1)
 
 if num_switches < 1:
@@ -73,6 +56,26 @@ def create_pc(pc_number, switch_x, switch_y):
         "y": switch_y + 100,
         "z": 1
     }
+    
+    # Criar diretório para o novo PC
+    new_pc_dir = f"/home/lucasventura/GNS3/projects/Cenario_GNS3/project-files/vpcs/{pc_id}"
+    os.makedirs(new_pc_dir, exist_ok=True)
+    
+    # Criar arquivo de configuração do novo PC
+    startup_vpc_content = f"""# This is the configuration for PC{pc_number}
+#
+# Uncomment the following line to enable DHCP
+# dhcp
+# or the line below to manually setup an IP address and subnet mask
+# ip 192.168.1.{pc_number} 255.0.0.0
+#
+
+set pcname PC{pc_number}
+"""
+    startup_vpc_path = os.path.join(new_pc_dir, "startup.vpc")
+    with open(startup_vpc_path, "w") as file:
+        file.write(startup_vpc_content)
+    
     return pc, pc_id
 
 # Função para criar um switch
@@ -175,7 +178,7 @@ for switch_id, switch_x, switch_y in switch_ids:
 
 # Conectar os switches entre si (topologia linear)
 for i in range(1, len(switch_ids)):
-    link = create_link(switch_ids[i-1][0], 0, switch_ids[i][0], 0)
+    link = create_link(switch_ids[i-1][0], 6, switch_ids[i][0], 7)
     gns3_data["topology"]["links"].append(link)
 
 # Salvar as mudanças de volta no arquivo .gns3

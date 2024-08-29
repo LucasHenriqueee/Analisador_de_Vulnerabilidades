@@ -18,17 +18,31 @@ Lucas Henrique Ventura Oliveira
 import json
 import uuid
 import os
+import math
 
 # Caminho do arquivo .gns3
 gns3_file_path = "/home/lucasventura/GNS3/projects/Cenario_GNS3/Cenario_GNS3.gns3"
+
+# Verificar se o caminho do arquivo existe
+if not os.path.exists(gns3_file_path):
+    print(f"Arquvio {gns3_file_path} não encontrado.")
+    exit(1)
 
 # Ler o arquivo .gns3
 with open(gns3_file_path, "r") as file:
     gns3_data = json.load(file)
 
 # Solicitar ao usuário o número de switches e PCs desejados
-num_switches = int(input("Quantos switches você deseja adicionar? "))
-num_pcs = int(input("Quantos PCs você deseja adicionar no total? "))
+while True:
+    try:
+        num_switches = int(input("Quantos switches você deseja adicionar? "))
+        num_pcs = int(input("Quantos PCs você deseja adicionar no total? "))
+        if num_switches > 0 and num_pcs > 0:
+            break
+        else:
+            print("O número de switches e PCs deve ser maior do que 0.")
+    except ValueError:
+        print("Por favor, insira um valor inteiro válido.")
 
 # IDs e contadores
 switch_ids = [str(uuid.uuid4()) for _ in range(num_switches)]
@@ -154,6 +168,8 @@ def create_switch(switch_number):
 # Função para criar links entre switches
 def create_switch_links():
     switch_links = []
+    #Switch x -> Ao gerar o swtich, mandar essa posição para o pc que conetar nesse link
+    #switch y
     for i in range(num_switches - 1):
         link_id = str(uuid.uuid4())
         link = {
