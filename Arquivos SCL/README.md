@@ -10,6 +10,6 @@ Nessa pasta encontra-se todos arquivos de modelos de comunicação do padrão IE
 
 ## Descição dos arquivos
 
-- O arquivo IEC station 1.scd é um modelo real de uma subestão que utiliza o IEC 61850.
+- O arquivo [Arquivo local](PIBIT/Arquivos SCL/IEC station 1.scd) IEC station 1.scd é um modelo real de uma subestão que utiliza o IEC 61850.
 - O arquivo SCD_model.scd é um arquivos derivado da SCL que foi utilizado para realizar a simulação nesse projeto. Foi por meio dele que foi elaborado a criação da topologia no GNS3.
 - O arquivo simpleIO_direct_control.cid é apenas uma cofiguração final do IED dentra da IEC 61850.
